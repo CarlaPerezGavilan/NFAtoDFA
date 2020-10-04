@@ -26,6 +26,7 @@ def main():
     nfa = nfa.replace('{', '').replace('}', '')
     nfa = nfa[1: len(nfa)-1]
     nfa = nfa.split('),(')
+    print('Initial String:')
     print(nfa)
 
     alphabet = set()
@@ -51,27 +52,19 @@ def main():
         col = states.index(tupple[1])
         row = alphabet.index(tupple[0])
         
-        nfaTable[col][row] = tupple[2] if nfaTable[col][row] == 0 else nfaTable[col][row] + "," + tupple[2]
-    
+        nfaTable[col][row] = tupple[2] if nfaTable[col][row] == 0 else nfaTable[col][row] + "" + tupple[2]
+    print('NFA Table:')
     print(nfaTable)
 
-    
-    
-    dfaTable = [ [0 for i in range(0, len(alphabet)) ] for j in range(0, len(states)) ]
+    # dfaTable = [ [0 for i in range(0, len(alphabet)) ] for j in range(0, len(states)) ]
 
-    
-    
-    # test = []
-    # for i in range(1,len(states)):
-    #   test += list(combinations(states, i))
-      
-    
-    # for i in range(1,len(states)):
-    #   comb = list(combinations(states, i))
-    #   subset = list(comb)
-    #   states.append(subset)
-    # print("nfa ")
-    # print(states)
+    # Saves all possible combinations of states into array
+    stateCombinations = []
+    for i in range(1,len(states)):
+      comb = combinations(states, i)
+      stateCombinations += [''.join(i) for i in comb]
+    print('State Combinations:')
+    print(stateCombinations)
 
 if __name__ == "__main__":
     main()
