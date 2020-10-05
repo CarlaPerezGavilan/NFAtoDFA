@@ -15,18 +15,43 @@ Created on Thu Oct  1 19:49:55 2020
 """
 
 from itertools import combinations
+import os
+
+
+def printTable(table, alphabet, states):
+    alphabetString = 'State\t' + '\t'.join(alphabet)
+    print(alphabetString)
+    for line in enumerate(table):
+        lineString = '\t'.join(line[1])
+        print(states[line[0]] + '\t' + lineString)
+
 
 def main():
-    #file = open('')
-    #nfa = file.read()
+    # Prompt user to select file with NFA and read it
+    print('Files in ./NFAs/ directory:')
+    fileArray = []
+    count = 1
+    for file in os.listdir('./NFAs'):
+            if file.endswith('.txt'):
+                    print(os.path.join(str(count) + '. ', file))
+                    fileArray.append(file)
+                    count += 1
+    
+    prompt = input('\nWhich file number which contains an NFA do you want converted into a DFA?: ')
+    selectedFile = fileArray[int(prompt)-1]
 
-    nfa = "{(0,p,p),(0,p,q),(1,p,p),(0,q,r),(1,q,r),(0,r,s),(0,s,s),(1,s,s)}"
+    file = open('./NFAs/' + selectedFile)
+    nfa = file.read()
+    nfa = ''.join(nfa.split())
+
+    print('\nRecieved NFA string:')
+    print(nfa)
 
     # Trim nfa input string onto format: ["0,p,p", "0,p,q",...,"1,s,s"]
     nfa = nfa.replace('{', '').replace('}', '')
-    nfa = nfa[1: len(nfa)-1]
+    nfa = nfa[1:len(nfa)-1]
     nfa = nfa.split('),(')
-    print('Initial String:')
+    print('Initial String as Array:')
     print(nfa)
 
     alphabet = set()
@@ -45,30 +70,32 @@ def main():
     alphabet.sort()
     states.sort()
 
-    print('Alphabet:')
+    print('\nAlphabet:')
     print(alphabet)
     print('States:')
     print(states)
 
     # Make NFA delta table
-    nfaTable = [ [0 for i in range(0, len(alphabet)) ] for j in range(0, len(states)) ]
+    nfaTable = [ ['0' for i in range(0, len(alphabet)) ] for j in range(0, len(states)) ]
     for tupple in nfa:
         tupple = tupple.split(',')
         col = states.index(tupple[1])
         row = alphabet.index(tupple[0])
         
-        nfaTable[col][row] = tupple[2] if nfaTable[col][row] == 0 else nfaTable[col][row] + "" + tupple[2]
-    print('NFA Table:')
-    print(nfaTable)
+        nfaTable[col][row] = tupple[2] if nfaTable[col][row] == '0' else nfaTable[col][row] + "" + tupple[2]
+    print('\nNFA Table')
+    print('-----------')
+    printTable(nfaTable, alphabet, states)
+    # print(nfaTable)
 
     # Saves all possible combinations of states into array
     stateCombinations = []
-    for i in range(1,len(states)):
+    for i in range(1,len(states)+1):
       comb = combinations(states, i)
       stateCombinations += [''.join(i) for i in comb]
     stateCombinations.insert(0,'0')
-    print('State Combinations:')
-    print(stateCombinations)
+    # print('State Combinations:')
+    # print(stateCombinations)
 
     # Saves stateCombinations as indexes for usage in dfaTable
     stateCombinationsIndexes = []
@@ -84,15 +111,15 @@ def main():
                 tmpArray.append(tmpStates.index(entry[i]))
                 i += 1
             stateCombinationsIndexes.append(tmpArray)
-    print('State Combinations Indexes:')
-    print(stateCombinationsIndexes)
+    # print('State Combinations Indexes:')
+    # print(stateCombinationsIndexes)
             
     # Make DFA delta table
     dfaTable = []
     for index, entry in enumerate(stateCombinationsIndexes):
         if len(entry) == 1:
             if entry[0] == 0:
-                dfaTable.append([0,0])
+                dfaTable.append(['0','0'])
             else:
                 tmpArray = []
                 for alIdx in enumerate(alphabet):
@@ -101,14 +128,19 @@ def main():
         else:
             tmpArray = []
             for alIdx in enumerate(alphabet):
-                tmpString = ""
+                tmpSet = set()
                 for enIndex in entry:
-                    if dfaTable[enIndex][alIdx[0]] != 0:
-                        tmpString += str(dfaTable[enIndex][alIdx[0]])
-                tmpArray.append(tmpString)
+                    tmpSet.add(str(dfaTable[enIndex][alIdx[0]]))
+                if len(tmpSet) > 1 and '0' in tmpSet:
+                    tmpSet.remove('0')
+                setStringList = [str(s) for s in tmpSet]
+                setStringList.sort()
+                setString = ''.join(setStringList)
+                tmpArray.append(setString)
             dfaTable.append(tmpArray)
-    print('DFA Table:')
-    print(dfaTable)
+    print('\nDFA Table')
+    print('-----------')
+    printTable(dfaTable, alphabet, stateCombinations)
 
 
 if __name__ == "__main__":
