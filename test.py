@@ -6,14 +6,6 @@ Created on Thu Oct  1 19:49:55 2020
 @author: Carla Perez Gavilan
 """
 
-
-"""
-1. Open file
-2. Get string
-3. 
-
-"""
-
 from itertools import combinations
 import os
 
