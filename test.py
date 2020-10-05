@@ -87,7 +87,7 @@ def main():
     print('State Combinations Indexes:')
     print(stateCombinationsIndexes)
             
-    # Make NFA delta table
+    # Make DFA delta table
     dfaTable = []
     for index, entry in enumerate(stateCombinationsIndexes):
         if len(entry) == 1:
