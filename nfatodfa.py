@@ -7,7 +7,7 @@ Created on Thu Oct  1 19:49:55 2020
 """
 
 from itertools import combinations
-import os
+from os import listdir, path
 
 
 def printTable(table, alphabet, states):
@@ -23,9 +23,9 @@ def main():
     print('Files in ./NFAs/ directory:')
     fileArray = []
     count = 1
-    for file in os.listdir('./NFAs'):
+    for file in listdir('./NFAs'):
             if file.endswith('.txt'):
-                    print(os.path.join(str(count) + '. ', file))
+                    print(path.join(str(count) + '. ', file))
                     fileArray.append(file)
                     count += 1
     
