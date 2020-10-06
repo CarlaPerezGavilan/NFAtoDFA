@@ -108,6 +108,7 @@ def main():
             
     # Make DFA delta table
     dfaTable = []
+    stringOutput = "{"
     for index, entry in enumerate(stateCombinationsIndexes):
         if len(entry) == 1:
             if entry[0] == 0:
@@ -116,10 +117,14 @@ def main():
                 tmpArray = []
                 for alIdx in enumerate(alphabet):
                     tmpArray.append(nfaTable[index-1][alIdx[0]])
+                    stringOutput += "("
+                    stringOutput += str(alIdx[0]) + "," + stateCombinations[index] + "," + nfaTable[index-1][alIdx[0]]
+                    stringOutput += "),"
                 dfaTable.append(tmpArray)
         else:
             tmpArray = []
             for alIdx in enumerate(alphabet):
+                stringOutput += "("
                 tmpSet = set()
                 for enIndex in entry:
                     tmpSet.add(str(dfaTable[enIndex][alIdx[0]]))
@@ -129,11 +134,20 @@ def main():
                 setStringList.sort()
                 setString = ''.join(setStringList)
                 tmpArray.append(setString)
+                stringOutput += str(alIdx[0]) + "," + stateCombinations[index] + "," + setString
+                stringOutput += "),"
             dfaTable.append(tmpArray)
+
+    stringOutput = stringOutput[:-1]
+    stringOutput += "}"
     print('\nDFA Table')
     print('-----------')
     printTable(dfaTable, alphabet, stateCombinations)
 
+    #Create dfa format
+    finalFile = open('./NFAs/' + selectedFile.replace('.txt', '') + '-DFA.txt', "w+" )
+    finalFile.write(stringOutput)
+    finalFile.close()
 
 if __name__ == "__main__":
     main()
