@@ -145,9 +145,12 @@ def main():
     printTable(dfaTable, alphabet, stateCombinations)
 
     #Create dfa format
-    finalFile = open('./NFAs/' + selectedFile.replace('.txt', '') + '-DFA.txt', "w+" )
+    finalFilePath = './DFAs/' + selectedFile.replace('.txt', '') + '-DFA.txt'
+    finalFile = open(finalFilePath, "w+")
     finalFile.write(stringOutput)
     finalFile.close()
+
+    print('\nOutput file was saved to ' + finalFilePath)
 
 if __name__ == "__main__":
     main()
